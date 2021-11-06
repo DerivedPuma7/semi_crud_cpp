@@ -1,14 +1,16 @@
 /*Identificação da dupla:
 
-1{
-	Nome: Gustavo Ribeiro de Figueiredo
-	Número de matrícula: 201910617
-	Turma: 22C
-}
-2{
-	Nome: Gustavo Henrique Miele Fraga
-	Número de matrícula: 201820373
-	Turma: 22C
+alunos = {
+	1:{
+		Nome: Gustavo Ribeiro de Figueiredo
+		Número de matrícula: 201910617
+		Turma: 22C
+	},
+	2:{
+		Nome: Gustavo Henrique Miele Fraga
+		Número de matrícula: 201820373
+		Turma: 22C
+	}
 }
 
 Tema do trabalho: Frutas tropicais
