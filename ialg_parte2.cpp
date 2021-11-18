@@ -16,6 +16,7 @@ alunos = {
 Tema do trabalho: Frutas tropicais
 */
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 struct frutas
@@ -76,6 +77,10 @@ int mostrarMenu()
 	else if (opcao == "Excluir")
 	{
 		return 5;
+	}
+	else if (opcao == "Gravar")
+	{
+		return 6;
 	}
 	else if (opcao == "Sair")
 	{
@@ -487,6 +492,19 @@ void excluirItem(frutas fruta[], int &quantidadeItens)
 	quantidadeItens--;
 }
 
+void gravarItens(frutas fruta[], int quantidadeItens){
+	ofstream arquivo("frutas.txt");
+	
+	if(arquivo){
+		arquivo << "Frutas cadastradas no sistema ordenadas:" << endl;
+		arquivo << endl;
+		
+		for(int i = 0; i < quantidadeItens; i++){
+			arquivo << fruta[i].id << "  |  " << fruta[i].nome << "  |  " << fruta[i].regiao << "  |  " << fruta[i].calorias << "  |  " << fruta[i].cor << endl;
+		}
+	}
+}
+
 int main()
 {
 	const int limite = 100;
@@ -543,6 +561,9 @@ int main()
 			break;
 		case (5):
 			excluirItem(fruta, quantidadeItens);
+			break;
+		case (6):
+			gravarItens(fruta, quantidadeItens);
 			break;
 		case (-1):
 			return 0;
