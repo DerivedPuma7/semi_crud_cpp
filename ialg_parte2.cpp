@@ -90,41 +90,61 @@ int mostrarMenu()
 	return 0;
 }
 
-void cadastrarItem(frutas fruta[], identificador &fruta_id, int &quantidadeItens)
-{
-	string novoNomeFruta, novaRegiaoFruta, novaCorFruta;
-	float novaCaloriaFruta;
+void ordenarId(frutas fruta[], int quantidadeItens){
+	//INICIO ORDENAÇÃO
+	int tam = quantidadeItens;
+	
+	string vetorNome[tam], vetorCor[tam], vetorRegiao[tam];
+	int vetorId[tam];
+	float vetorCaloria[tam];
 
-	if (quantidadeItens >= 99)
+	for (int i = 0; i < quantidadeItens; i++)
 	{
-		cout << "Não é possível inserir outro registro" << endl;
-		return;
+		vetorId[i] = fruta[i].id;
+		vetorNome[i] = fruta[i].nome;
+		vetorRegiao[i] = fruta[i].regiao;
+		vetorCaloria[i] = fruta[i].calorias;
+		vetorCor[i] = fruta[i].cor;
 	}
 
-	cout << endl;
-	cout << "Insira o Nome, a Regiao, as Calorias e a Cor da fruta. Cada item deve ser inserido em uma linha diferente" << endl;
-	cout << endl;
+	int j;
+	
+	string valor_nome, valor_regiao, valor_cor;
+	float valor_calorias;
+	int valor_pivo;
 
-	cin.ignore();
-	getline(cin, novoNomeFruta);
-	getline(cin, novaRegiaoFruta);
-	cin >> novaCaloriaFruta;
-	cin.ignore();
-	getline(cin, novaCorFruta);
+	for (int i = 1; i < tam; i++)
+	{
+		valor_pivo = vetorId[i];
+		valor_nome = vetorNome[i];	
+		valor_regiao = vetorRegiao[i];
+		valor_calorias = vetorCaloria[i];
+		valor_cor = vetorCor[i];
 
-	fruta[quantidadeItens].id = fruta_id.id;
-	fruta[quantidadeItens].nome = novoNomeFruta;
-	fruta[quantidadeItens].regiao = novaRegiaoFruta;
-	fruta[quantidadeItens].calorias = novaCaloriaFruta;
-	fruta[quantidadeItens].cor = novaCorFruta;
+		j = i - 1;
+		while ((j >= 0) and (valor_pivo < vetorId[j]))
+		{
+			vetorId[j + 1] = vetorId[j];
 
-	cout << endl;
-	cout << "Fruta inserida com sucesso" << endl;
-	cout << endl;
+			fruta[j + 1].id = vetorId[j];
+			fruta[j + 1].nome = vetorNome[j];
+			fruta[j + 1].regiao = vetorRegiao[j];
+			fruta[j + 1].calorias = vetorCaloria[j];
+			fruta[j + 1].cor = vetorCor[j];
+			j--;
+		}
+		vetorId[j + 1] = valor_pivo;
 
-	fruta_id.incrementar();
-	quantidadeItens++;
+		fruta[j + 1].id = valor_pivo;
+		fruta[j + 1].nome = valor_nome;		
+		fruta[j + 1].regiao = valor_regiao;
+		fruta[j + 1].calorias = valor_calorias;
+		fruta[j + 1].cor = valor_cor;
+	}
+	// FIM ORDENAÇÃO
+}
 
+void ordenarNome(frutas fruta[], int quantidadeItens){
 	//INICIO ORDENAÇÃO
 	int tam = quantidadeItens;
 	string vetorNome[tam], vetorCor[tam], vetorRegiao[tam];
@@ -174,6 +194,44 @@ void cadastrarItem(frutas fruta[], identificador &fruta_id, int &quantidadeItens
 		fruta[j + 1].cor = valor_cor;
 	}
 	// FIM ORDENAÇÃO
+}
+
+void cadastrarItem(frutas fruta[], identificador &fruta_id, int &quantidadeItens)
+{
+	string novoNomeFruta, novaRegiaoFruta, novaCorFruta;
+	float novaCaloriaFruta;
+
+	if (quantidadeItens >= 99)
+	{
+		cout << "Não é possível inserir outro registro" << endl;
+		return;
+	}
+
+	cout << endl;
+	cout << "Insira o Nome, a Regiao, as Calorias e a Cor da fruta. Cada item deve ser inserido em uma linha diferente" << endl;
+	cout << endl;
+
+	cin.ignore();
+	getline(cin, novoNomeFruta);
+	getline(cin, novaRegiaoFruta);
+	cin >> novaCaloriaFruta;
+	cin.ignore();
+	getline(cin, novaCorFruta);
+
+	fruta[quantidadeItens].id = fruta_id.id;
+	fruta[quantidadeItens].nome = novoNomeFruta;
+	fruta[quantidadeItens].regiao = novaRegiaoFruta;
+	fruta[quantidadeItens].calorias = novaCaloriaFruta;
+	fruta[quantidadeItens].cor = novaCorFruta;
+
+	cout << endl;
+	cout << "Fruta inserida com sucesso" << endl;
+	cout << endl;
+
+	fruta_id.incrementar();
+	quantidadeItens++;
+	
+	ordenarNome(fruta, quantidadeItens);
 }
 
 void listarItens(frutas fruta[], int quantidadeItens)
@@ -496,13 +554,47 @@ void gravarItens(frutas fruta[], int quantidadeItens){
 	ofstream arquivo("frutas.txt");
 	
 	if(arquivo){
-		arquivo << "Frutas cadastradas no sistema ordenadas:" << endl;
+		ordenarId(fruta, quantidadeItens);
+		
+		arquivo << "Frutas cadastradas no sistema ordenadas pelo id:" << endl;
 		arquivo << endl;
 		
-		for(int i = 0; i < quantidadeItens; i++){
-			arquivo << fruta[i].id << "  |  " << fruta[i].nome << "  |  " << fruta[i].regiao << "  |  " << fruta[i].calorias << "  |  " << fruta[i].cor << endl;
+		arquivo << "| id_fruta |"
+		  << "  nome_fruta |"
+		  << " regiao_fruta |"
+		  << " caloria_fruta |"
+		  << "  cor_fruta  |" << endl;
+		  
+		for (int i = 0; i < quantidadeItens; i++)
+		{
+			arquivo << "|   " << fruta[i].id << "      |     " << fruta[i].nome << "      |     " << fruta[i].regiao << "      |     " << fruta[i].calorias << "      |     " << fruta[i].cor << endl;
 		}
+		
+		cout << endl;
+		cout << "Gravacao realizada com sucesso!" << endl;
+		cout << endl;
+		ordenarNome(fruta, quantidadeItens);
 	}
+	else{
+		cout << endl;
+		cout << "Arquivo não encontrado" << endl;
+		cout << endl;
+	}
+}
+
+void confirmarGravacao(frutas fruta[], int quantidadeItens){
+	string resposta;
+	
+	cout << endl;
+	cout << "Deseja gravar os dados antes de sair ? S/N" << endl;
+	
+	cin >> resposta;
+	
+	if(resposta == "S"){
+		gravarItens(fruta, quantidadeItens);
+	}
+	
+	cout << "Encerrando o programa..." << endl;
 }
 
 int main()
@@ -566,6 +658,7 @@ int main()
 			gravarItens(fruta, quantidadeItens);
 			break;
 		case (-1):
+			confirmarGravacao(fruta, quantidadeItens);
 			return 0;
 			break;
 		default:
